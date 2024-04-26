@@ -1,0 +1,218 @@
+import random
+import random
+class BasketballChampionship:
+    def __init__(self, teams):
+        self.teams = teams
+        self.scores = {team: 0 for team in teams}
+        self.point_diff = {team: 0 for team in teams}
+        self.matches_played = {team: 0 for team in teams}
+        self.matchdays = self.generate_matchdays()
+        self.wins = {team: 0 for team in teams}
+        self.loses = {team: 0 for team in teams}
+
+    def generate_matchdays(self):
+        matchdays = []
+        total_rounds = len(self.teams) - 1
+        total_matches_per_team = 2 * total_rounds
+
+        for round_num in range(total_rounds):
+            current_matchday = []
+            for i in range(len(self.teams) // 2):
+                team1 = self.teams[i]
+                team2 = self.teams[-1 - i]
+                current_matchday.append((team1, team2))
+            matchdays.append(current_matchday)
+            self.teams = [self.teams[0]] + [self.teams[-1]] + self.teams[1:-1]
+
+        # Duplicate the matchdays to cover both home and away matches
+        matchdays *= 2
+
+        # Reverse matchups for matchdays 11 to 22
+        for i in range(10, 22):
+            matchdays[i] = [(team2, team1) for (team1, team2) in matchdays[i]]
+
+        return matchdays
+
+    def simulate_match(self, team1, team2):
+        team1_score = random.randint(80, 120)
+        team2_score = random.randint(80, 120)
+        team1_overtime = 0
+        team2_overtime = 0
+        global maxscore
+
+        self.matches_played[team1] += 1
+        self.matches_played[team2] += 1
+        if self.matches_played[team1] == 1:
+            maxscore = 80
+
+        if team1_score > team2_score:
+            self.scores[team1] += 2
+            self.scores[team2] += 1
+            self.wins[team1] += 1
+            self.loses[team2] += 1
+
+
+        elif team1_score < team2_score:
+            self.scores[team2] += 2
+            self.scores[team1] += 1
+            self.wins[team2] += 1
+            self.loses[team1] += 1
+
+        else:
+            team1_overtime = random.randint(0, 30)
+            team2_overtime = random.randint(0, 30)
+            if team1_overtime > team2_overtime:
+                self.scores[team2] += 1
+                self.scores[team1] += 2
+                self.wins[team1] += 1
+                self.loses[team2] += 1
+
+
+            elif team1_overtime < team2_overtime:
+                self.scores[team1] += 1
+                self.scores[team2] += 2
+                self.wins[team2] += 1
+                self.loses[team1] += 1
+            else:
+                self.scores[team1] += 1
+                self.scores[team2] += 1
+
+        self.point_diff[team1] += team1_score - team2_score + team1_overtime - team2_overtime
+        self.point_diff[team2] += team2_score - team1_score + team2_overtime - team1_overtime
+
+        print(f"{team1} vs {team2}: {team1_score + team1_overtime} - {team2_score + team2_overtime}")
+        if team1_score + team1_overtime > 10:
+            if team1_score + team1_overtime > team2_score + team2_overtime and team1_score + team1_overtime > maxscore:
+                maxscore = team1_score + team1_overtime
+        elif team1_score + team1_overtime < team2_score + team2_overtime and team2_score + team2_overtime > maxscore:
+            maxscore = team2_score + team2_overtime
+
+    def run_championship(self,maxwin,maxtea,lmao,lmao1,lmao2):
+
+
+        print("Basketball Championship\n")
+
+        for matchday_num, matchday in enumerate(self.matchdays, start=1):
+            print(f"Matchday {matchday_num}:\n")
+            for match in matchday:
+                self.simulate_match(match[0], match[1])
+            print("\nStandings:")
+            self.print_standings()
+            print("=" * 70)
+
+        print("\nChampionship Results:")
+        self.print_final_standings()
+
+    def print_standings(self):
+        print("{:<10} {:<8} {:<12} {:<12} {:<0} {:<00}".format("Team", "Points", "Point Difference", "Matches Played",
+                                                               "W", "L"))
+        print("=" * 70)
+        sorted_teams = sorted(self.teams, key=lambda x: (
+        self.scores[x], self.point_diff[x], self.matches_played[x], self.wins[x], self.loses[x]), reverse=True)
+        for team in sorted_teams:
+            print("{:<10} {:<8} {:<15} {:<15}".format(team, self.scores[team], self.point_diff[team],
+                                                      self.matches_played[team]), self.wins[team], self.loses[team])
+        print()
+
+    def print_final_standings(self):
+        global maxwin
+        global maxtea
+        print("{:<10} {:<8} {:<15} {:<12} {:<0} {:<00}".format("Team", "Points", "Point Difference", "Matches Played",
+                                                               "W", "L"))
+        print("=" * 70)
+
+        sorted_teams = sorted(self.teams, key=lambda x: (
+        self.scores[x], self.point_diff[x], self.matches_played[x], self.wins[x], self.loses[x]), reverse=True)
+        i = 0
+        for team in sorted_teams:
+            i += 1
+            if i == 1:
+                maxpd = self.point_diff[team]
+            if maxpd < self.point_diff[team]:
+                maxpd = self.point_diff[team]
+            print("{:<10} {:<8} {:<15} {:<15} {:<00} {:<0}".format(team, self.scores[team], self.point_diff[team],
+                                                                   self.matches_played[team], self.wins[team],
+                                                                   self.loses[team]))
+            if self.wins[team] > maxwin:
+                maxwin = self.wins[team]
+                maxtea = sorted_teams[0]
+
+
+
+
+        winner = sorted_teams[0]
+        for i in range (0,11):
+            if winner== self.teams[i]:
+                lmao[i]=lmao[i] + 1
+        E1=sorted_teams[0]
+        E2=sorted_teams[1]
+        E3=sorted_teams[2]
+        for i in range (0,11):
+            if  E1 == self.teams[i]:
+                lmao1[i]=lmao1[i]+1
+            elif E2 == self.teams[i]:
+                lmao1[i]=lmao1[i]+1
+            if E3 == self.teams[i]:
+                lmao1[i]=lmao1[i]+1
+        Z1=sorted_teams[10]
+        Z2=sorted_teams[11]
+        for i in range (0,11):
+            if Z1 == self.teams[i]:
+                lmao2[i]=lmao2[i]+1
+            elif Z2 == self.teams[i]:
+                lmao2[i]=lmao2[i]+1
+
+        print(f"\nChampion: {winner} with a total score of {self.scores[winner]} points.")
+        print(f"\n most point in a game:{maxscore}")
+        print(f"\n most point diffence: {maxpd}")
+        print(f"\n teams that go to the European competition:{sorted_teams[0], sorted_teams[1], sorted_teams[2]}")
+        print(f"\n teams that fall to the second division: {sorted_teams[10], sorted_teams[11]}")
+
+
+if __name__ == "__main__":
+
+ teams = [input(), input(), input(), input(), input(), input(), input(), input(), input(), input(), input(), input()]
+ maxwin=0
+ maxtea =""
+ lmao = [0,0,0,0,0,0,0,0,0,0,0,0]
+ lmao1 = [0,0,0,0,0,0,0,0,0,0,0,0]
+ lmao2 = [0,0,0,0,0,0,0,0,0,0,0,0]
+
+end=0
+while end ==0:
+    for i in range(0,9):
+
+           championship = BasketballChampionship(teams)
+           championship.run_championship(maxwin,maxtea,lmao,lmao1,lmao2)
+    print(f"\nTeam with the most wins:", maxwin ,maxtea)
+    m=0
+    mi=0
+    for i in range(0,11):
+        if lmao[i]> m:
+            m = lmao[i]
+            mi= i
+    print(f"\nTeam with the most Championships:",m,teams[mi])
+    n=0
+    ni=0
+    for i in range(0,11):
+        if lmao1[i] > n:
+            n = lmao1[i]
+            ni=i
+    print(f"\nTeam with the most European appearances:",n,teams[ni])
+    l=0
+    li=0
+    for i in range(0,11):
+        if lmao2[i] > l:
+            l = lmao2[i]
+            li=i
+    print(f"\nTeam with the most demotions to the second league:",l,teams[li])
+    print(f"\nWant to end?")
+    answer=input()
+    if answer != "Y":
+        lmao = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        lmao1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        lmao2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        maxwin = 0
+        maxtea = ""
+    else:
+        end = 1
