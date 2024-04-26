@@ -1,4 +1,19 @@
-import random
+from flask import Flask
+app= Flask(__name__)
+from ast import arg
+from fileinput import filename
+import tkinter
+from tkinter import PhotoImage
+root=tkinter.Tk()
+root.title("BASKETBALL FANTASY LEAGUE")
+root.geometry("500x600")
+text_label=tkinter.Label(root,text='BASKETBALL FANTASY LEAGUE')
+text_label.pack()
+image_path=PhotoImage(file=r"C:\Users\vagg-\source\repos\BASKETBALLCHAMPIONSHIP\BASKETBALLCHAMPIONSHIP\basketball.png")
+bg_image=tkinter.Label(root,image=image_path)
+bg_image.place(relheight=1,relwidth=1)
+text_label=tkinter.Label(root,text='BASKETBALL FANTASY LEAGUE')
+text_label.pack()
 import random
 class BasketballChampionship:
     def __init__(self, teams):
@@ -24,10 +39,10 @@ class BasketballChampionship:
             matchdays.append(current_matchday)
             self.teams = [self.teams[0]] + [self.teams[-1]] + self.teams[1:-1]
 
-        # Duplicate the matchdays to cover both home and away matches
+        
         matchdays *= 2
 
-        # Reverse matchups for matchdays 11 to 22
+        
         for i in range(10, 22):
             matchdays[i] = [(team2, team1) for (team1, team2) in matchdays[i]]
 
@@ -90,7 +105,7 @@ class BasketballChampionship:
     def run_championship(self,maxwin,maxtea,lmao,lmao1,lmao2):
 
 
-        print("Basketball Championship\n")
+        print("Basketball fantasy league\n")
 
         for matchday_num, matchday in enumerate(self.matchdays, start=1):
             print(f"Matchday {matchday_num}:\n")
@@ -104,8 +119,8 @@ class BasketballChampionship:
         self.print_final_standings()
 
     def print_standings(self):
-        print("{:<10} {:<8} {:<12} {:<12} {:<0} {:<00}".format("Team", "Points", "Point Difference", "Matches Played",
-                                                               "W", "L"))
+        text_label = tkinter.Label(root,text= print("{:<10} {:<8} {:<12} {:<12} {:<0} {:<00}".format("Team", "Points", "Point Difference", "Matches Played",
+                                                               "W", "L")))
         print("=" * 70)
         sorted_teams = sorted(self.teams, key=lambda x: (
         self.scores[x], self.point_diff[x], self.matches_played[x], self.wins[x], self.loses[x]), reverse=True)
@@ -170,16 +185,19 @@ class BasketballChampionship:
 
 
 if __name__ == "__main__":
-
- teams = [input(), input(), input(), input(), input(), input(), input(), input(), input(), input(), input(), input()]
- maxwin=0
- maxtea =""
- lmao = [0,0,0,0,0,0,0,0,0,0,0,0]
- lmao1 = [0,0,0,0,0,0,0,0,0,0,0,0]
- lmao2 = [0,0,0,0,0,0,0,0,0,0,0,0]
-
-end=0
+    app.run("localhost",4449)
+    print("Welcome to Basketball fantasy league!!!!")
+    z=0
+    end=0
 while end ==0:
+    if z==0:
+        print(f"\nPlease choose 12 different teams that will compete in the league using only latin letters")
+        teams = [input(), input(), input(), input(), input(), input(), input(), input(), input(), input(), input(), input()]
+        maxwin=0
+        maxtea =""
+        lmao = [0,0,0,0,0,0,0,0,0,0,0,0]
+        lmao1 = [0,0,0,0,0,0,0,0,0,0,0,0]
+        lmao2 = [0,0,0,0,0,0,0,0,0,0,0,0]
     for i in range(0,9):
 
            championship = BasketballChampionship(teams)
@@ -206,13 +224,28 @@ while end ==0:
             l = lmao2[i]
             li=i
     print(f"\nTeam with the most demotions to the second league:",l,teams[li])
-    print(f"\nWant to end?")
-    answer=input()
-    if answer != "Y":
-        lmao = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        lmao1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        lmao2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        maxwin = 0
-        maxtea = ""
-    else:
-        end = 1
+    print(f"\nWant to start over with different teams?(YES/NO)",)
+    while True:
+        answer=input()
+        if answer == "YES":
+            z=0
+            break
+        elif answer == "NO":
+            
+            z=z+1 
+            break
+        elif answer != "YES" and answer != "NO" :
+            print("WRONG INPUT PLEASE TRY AGAIN(YES/NO)")
+    print(f"\nWant to end?(YES/NO)")
+    while True:
+        answer=input()
+        if answer == "YES":
+            end =1
+            break
+        elif answer == "NO":
+            end = 0
+            break
+        elif answer != "YES" and answer !="NO":
+            print("\nWRONG INPUT PLEASE TRY AGAIN (YES/NO)")
+   
+ 
